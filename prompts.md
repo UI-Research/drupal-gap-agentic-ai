@@ -50,3 +50,19 @@ A running log of prompts used to build this repository.
 **Result:** Created `plan.md` with detailed architecture overview, repo layout, environment setup (Phase 1), skill definition (Phase 2), 3 test patterns with gotchas and assertions (Phase 3), eval harness structure (Phase 4), visual report generator (Phase 5), and iterative benchmark guide (Phase 6). Model: Claude Opus 4.6, high effort.
 
 ---
+
+### Prompt 4 — Create tasks from the plan
+
+> Create tasks from the plan.md
+
+**Result:** Created 9 todos in session DB from plan phases: 3 environment setups (parallel, no deps), drupal-skill → evals-json → grader-agent → aggregate-script → report-generator → benchmark-guide.
+
+---
+
+### Prompt 5 — Begin implementation
+
+> Yes, reminder to log all of my prompts, commit as you go along, and keep track of progress diligently.
+
+**Result:** Starting Phase 1 — setting up all three environments in parallel.
+
+---
