@@ -1,0 +1,140 @@
+{
+  "skill_name": "drupal-gap-benchmark",
+  "evals": [
+    {
+      "id": 0,
+      "framework": "drupal",
+      "pattern": "protected-route",
+      "prompt": "In the Drupal environment (envs/drupal, running via DDEV at drupal-gap-drupal.ddev.site), create a custom module called 'reports' in web/modules/custom/reports. It should define a route at /reports that returns a list of published Article nodes as JSON. The route must require a custom 'access reports' permission. Include all necessary YAML config files and PHP classes.",
+      "expected_output": "Module with reports.info.yml, reports.routing.yml, reports.permissions.yml, src/Controller/ReportsController.php",
+      "env_reset": "rm -rf envs/drupal/web/modules/custom/reports",
+      "assertions": [
+        {"name": "permissions-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/reports/reports.permissions.yml", "description": "reports.permissions.yml exists and defines 'access reports' permission"},
+        {"name": "routing-references-permission", "type": "file_contains", "path": "envs/drupal/web/modules/custom/reports/reports.routing.yml", "contains": "access reports", "description": "routing.yml references the 'access reports' permission"},
+        {"name": "no-hook-menu", "type": "file_not_contains", "glob": "envs/drupal/web/modules/custom/reports/**/*.php", "not_contains": "hook_menu", "description": "No hook_menu() anywhere in generated PHP files"},
+        {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/reports/reports.info.yml", "description": "Module info.yml file exists"},
+        {"name": "controller-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/reports/src/Controller/ReportsController.php", "description": "Controller class exists in correct namespace path"}
+      ]
+    },
+    {
+      "id": 1,
+      "framework": "nestjs",
+      "pattern": "protected-route",
+      "prompt": "In the NestJS environment (envs/nestjs), create a Reports module with a GET /reports endpoint that returns a list of items. The endpoint must require authentication using a guard. Include the module, controller, service, guard, and update app.module.ts to import the new module. Ensure all dependencies are properly exported.",
+      "expected_output": "ReportsModule with controller, service, guard, and proper module imports/exports",
+      "env_reset": "rm -rf envs/nestjs/src/reports",
+      "assertions": [
+        {"name": "module-exists", "type": "file_exists", "path": "envs/nestjs/src/reports/reports.module.ts", "description": "ReportsModule file exists"},
+        {"name": "exports-service", "type": "file_contains", "path": "envs/nestjs/src/reports/reports.module.ts", "contains": "exports", "description": "Module exports array is present (avoids injection failures)"},
+        {"name": "guard-exists", "type": "file_exists", "path": "envs/nestjs/src/reports/reports.guard.ts", "description": "Auth guard file exists"},
+        {"name": "app-module-imports", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "ReportsModule", "description": "AppModule imports ReportsModule"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds with no errors"}
+      ]
+    },
+    {
+      "id": 2,
+      "framework": "strapi",
+      "pattern": "protected-route",
+      "prompt": "In the Strapi 5 environment (envs/strapi), create a Report content type with title and body fields. Add a custom controller at GET /api/reports/summary that queries published reports using the Strapi 5 document service API. Ensure proper Strapi 5 patterns are used throughout.",
+      "expected_output": "Report content type schema, custom controller using strapi.documents(), route file",
+      "env_reset": "rm -rf envs/strapi/src/api/report",
+      "assertions": [
+        {"name": "schema-exists", "type": "file_exists", "path": "envs/strapi/src/api/report/content-types/report/schema.json", "description": "Report content type schema exists"},
+        {"name": "no-entity-service", "type": "file_not_contains", "glob": "envs/strapi/src/api/report/**/*.ts", "not_contains": "entityService", "description": "Does not use deprecated entityService (v4 pattern)"},
+        {"name": "uses-documents-api", "type": "file_contains", "glob": "envs/strapi/src/api/report/**/*.ts", "contains": "documents", "description": "Uses strapi.documents() API (v5 pattern)"},
+        {"name": "uses-document-id", "type": "file_not_contains", "glob": "envs/strapi/src/api/report/**/*.ts", "not_contains": "findOne(id)", "description": "Does not use numeric id pattern (should use documentId)"},
+        {"name": "controller-exists", "type": "file_exists", "path": "envs/strapi/src/api/report/controllers/report.ts", "description": "Controller file exists"}
+      ]
+    },
+    {
+      "id": 3,
+      "framework": "drupal",
+      "pattern": "scheduled-task",
+      "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'daily_count' in web/modules/custom/daily_count. It should add a scheduled job that runs every day at midnight and logs how many published Article nodes exist. Include all necessary files.",
+      "expected_output": "Module with cron/queue worker implementation that handles daily scheduling correctly",
+      "env_reset": "rm -rf envs/drupal/web/modules/custom/daily_count",
+      "assertions": [
+        {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/daily_count/daily_count.info.yml", "description": "Module info.yml exists"},
+        {"name": "no-bare-cron-timing", "type": "content_check", "description": "Does not rely solely on hook_cron() for midnight timing — should use QueueWorker, state API for last-run tracking, or Scheduler module"},
+        {"name": "queue-worker-or-state", "type": "content_check", "description": "Uses QueueWorker plugin annotation OR Drupal state API (\\Drupal::state()) to track last execution time"},
+        {"name": "uses-entity-query", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "contains": "getQuery", "description": "Uses entity query to count published nodes (not raw SQL)"},
+        {"name": "uses-logger", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "contains": "logger", "description": "Logs the count using Drupal logger service"}
+      ]
+    },
+    {
+      "id": 4,
+      "framework": "nestjs",
+      "pattern": "scheduled-task",
+      "prompt": "In the NestJS environment (envs/nestjs), add a scheduled job that runs every day at midnight and logs how many items exist. Use the @nestjs/schedule package. Include all necessary module setup and service configuration.",
+      "expected_output": "ScheduleModule imported in AppModule, task service with @Cron decorator, proper provider registration",
+      "env_reset": "rm -rf envs/nestjs/src/tasks",
+      "assertions": [
+        {"name": "schedule-module-imported", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "ScheduleModule", "description": "ScheduleModule.forRoot() is imported in AppModule"},
+        {"name": "cron-decorator-used", "type": "file_contains", "glob": "envs/nestjs/src/tasks/**/*.ts", "contains": "@Cron", "description": "Uses @Cron decorator for scheduling"},
+        {"name": "service-in-module", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "TasksModule", "description": "Tasks module/service registered in AppModule"},
+        {"name": "schedule-forroot", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "forRoot", "description": "ScheduleModule.forRoot() called (not just imported)"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"}
+      ]
+    },
+    {
+      "id": 5,
+      "framework": "strapi",
+      "pattern": "scheduled-task",
+      "prompt": "In the Strapi 5 environment (envs/strapi), add a cron job that runs every day at midnight and logs how many published articles exist. Use proper Strapi 5 cron configuration patterns.",
+      "expected_output": "Cron task properly registered in Strapi 5 config or via strapi.cron.add()",
+      "env_reset": "echo 'Reset strapi cron config'",
+      "assertions": [
+        {"name": "cron-in-correct-location", "type": "content_check", "description": "Cron defined in config/cron-tasks.ts or registered via strapi.cron.add() — not in a random service file"},
+        {"name": "no-strapi-config-cron", "type": "file_not_contains", "glob": "envs/strapi/config/**/*.ts", "not_contains": "strapi.config.cron", "description": "Does not use strapi.config.cron (v4 pattern)"},
+        {"name": "uses-documents-api", "type": "content_check", "description": "Uses strapi.documents() or strapi.db.query() to count articles — not entityService"},
+        {"name": "midnight-schedule", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "0 0 * * *", "description": "Cron expression targets midnight"},
+        {"name": "logs-count", "type": "content_check", "description": "Logs the article count using strapi.log or console.log"}
+      ]
+    },
+    {
+      "id": 6,
+      "framework": "drupal",
+      "pattern": "auto-populate-on-save",
+      "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'auto_slug' in web/modules/custom/auto_slug. When a new Article node is created, it should automatically generate a slug from the title and store it in a field. Use modern Drupal 10 patterns.",
+      "expected_output": "Module with EventSubscriber or hook_entity_presave implementing slug generation with entity type guard",
+      "env_reset": "rm -rf envs/drupal/web/modules/custom/auto_slug",
+      "assertions": [
+        {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/auto_slug/auto_slug.info.yml", "description": "Module info.yml exists"},
+        {"name": "entity-type-guard", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "NodeInterface", "description": "Checks entity type before operating (prevents running on all entities)"},
+        {"name": "presave-not-postsave", "type": "content_check", "description": "Uses presave/preSave hook or event (not insert/postSave which is too late to modify the entity before save)"},
+        {"name": "slug-generation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "slug", "description": "Contains slug generation logic"},
+        {"name": "event-subscriber-preferred", "type": "content_check", "description": "Uses EventSubscriber with service tag (preferred) OR hook_entity_presave with proper guard (acceptable)"}
+      ]
+    },
+    {
+      "id": 7,
+      "framework": "nestjs",
+      "pattern": "auto-populate-on-save",
+      "prompt": "In the NestJS environment (envs/nestjs), modify or extend the items setup so that when a new item is created, a 'slug' field is automatically generated from the name. Use TypeORM entity subscribers or service-layer logic (not controller-level). Include proper lifecycle hooks.",
+      "expected_output": "Entity subscriber or service with @BeforeInsert slug logic, not in controller",
+      "env_reset": "echo 'Reset nestjs items'",
+      "assertions": [
+        {"name": "not-in-controller", "type": "file_not_contains", "path": "envs/nestjs/src/items/items.controller.ts", "not_contains": "slug", "description": "Slug logic is NOT in the controller (should be in entity/service layer)"},
+        {"name": "before-insert-used", "type": "content_check", "description": "Uses @BeforeInsert() or equivalent pre-save hook — not @AfterInsert() which is too late"},
+        {"name": "slug-generation", "type": "file_contains", "glob": "envs/nestjs/src/**/*.ts", "contains": "slug", "description": "Contains slug generation logic"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"},
+        {"name": "service-or-entity-layer", "type": "content_check", "description": "Slug logic lives in entity subscriber, entity class, or service — not controller"}
+      ]
+    },
+    {
+      "id": 8,
+      "framework": "strapi",
+      "pattern": "auto-populate-on-save",
+      "prompt": "In the Strapi 5 environment (envs/strapi), add a lifecycle hook so that when a new Article is created, a 'slug' field is automatically generated from the title. The Article content type already has a slug field. Use proper Strapi 5 lifecycle hook patterns.",
+      "expected_output": "Lifecycle hook at correct path using beforeCreate, not afterCreate for mutation",
+      "env_reset": "echo 'Reset strapi lifecycle hooks'",
+      "assertions": [
+        {"name": "lifecycle-correct-path", "type": "file_exists", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "description": "Lifecycle file at correct Strapi 5 path (content-types/article/lifecycles.ts)"},
+        {"name": "before-create-used", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "beforeCreate", "description": "Uses beforeCreate hook (not afterCreate which can't mutate)"},
+        {"name": "no-after-create-throw", "type": "content_check", "description": "Does not throw errors in afterCreate (only beforeX hooks should throw)"},
+        {"name": "slug-from-title", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "slug", "description": "Generates slug from title"},
+        {"name": "exports-lifecycle", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "export", "description": "Lifecycle hooks are properly exported"}
+      ]
+    }
+  ]
+}
