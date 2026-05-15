@@ -1,0 +1,13 @@
+/vendor/
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/
+/web/profiles/contrib/
+/web/sites/*/files/
+/web/sites/*/settings.local.php
+/.ddev/.homeadditions/
+/.ddev/db_snapshots/
+/.ddev/sequelpro.spf
+/.ddev/.dbimageBuild/
+/.ddev/.sshimageBuild/
+/.ddev/.webimageBuild/
