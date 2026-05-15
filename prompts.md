@@ -101,3 +101,11 @@ Key finding: `auto-populate-on-save` pattern revealed the gap — Drupal scored 
 **Result:** Enabled GitHub Pages serving from `docs/` on `main`. Updated `generate_report.py` to auto-publish to `docs/index.html`. Live at https://ui-research.github.io/drupal-gap-agentic-ai/
 
 ---
+
+### Prompt 8 — Evaluate testing criteria against evidence-based standards
+
+> Make sure to track my prompts and commit changes as we go. Evaluate our testing criteria against known good evidence based tracking that you find online. Write a short report on critiques of our testing methods and our results.
+
+**Result:** Researched established AI code evaluation benchmarks (HumanEval/Codex, EvalPlus, SWE-bench, ClassEval, τ-bench, CodeT) and produced `docs/critique.md` — a structured critique of our methodology covering: sample size, self-grading confound, static assertions, execution gap, context-leak bias, pass@k absence, and inter-rater reliability. Report committed and published to GitHub Pages.
+
+---
