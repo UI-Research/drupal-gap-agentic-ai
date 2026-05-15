@@ -1,0 +1,3 @@
+access reports:
+  title: 'Access reports'
+  description: 'Allow users to access the reports JSON endpoint.'

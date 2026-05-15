@@ -1,0 +1,14 @@
+{
+  "eval_id": 2,
+  "framework": "strapi",
+  "pattern": "protected-route",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "schema-exists", "passed": true, "evidence": "File report/content-types/report/schema.json exists with collectionType kind, title and body attributes"},
+    {"text": "no-entity-service", "passed": true, "evidence": "grep -r 'entityService' found no matches in any .ts file"},
+    {"text": "uses-documents-api", "passed": true, "evidence": "report/controllers/report.ts contains 'strapi.documents(\"api::report.report\").findMany()'"},
+    {"text": "uses-document-id", "passed": true, "evidence": "grep -r 'findOne(id)' found no matches — uses documentId pattern instead"},
+    {"text": "controller-exists", "passed": true, "evidence": "File report/controllers/report.ts exists with summary() handler using documents API"}
+  ],
+  "score": 1.0
+}

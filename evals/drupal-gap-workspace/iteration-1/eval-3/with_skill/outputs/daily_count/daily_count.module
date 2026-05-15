@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the Daily Count module.
+ */
+
+use Drupal\Core\State\StateInterface;
+
+/**
+ * Implements hook_cron().
+ *
+ * Queues the daily article count job if 24 hours have elapsed since the last
+ * run. hook_cron() cannot guarantee execution at a specific time, so we use
+ * the State API to enforce a minimum interval of one day.
+ */
+function daily_count_cron(): void {
+  $state = \Drupal::state();
+  $last_run = $state->get('daily_count.last_run', 0);
+  $interval = 86400; // 24 hours in seconds.
+
+  $request_time = \Drupal::time()->getRequestTime();
+
+  if (($request_time - $last_run) >= $interval) {
+    /** @var \Drupal\Core\Queue\QueueFactory $queue_factory */
+    $queue_factory = \Drupal::service('queue');
+    $queue = $queue_factory->get('daily_count_article_count');
+    $queue->createItem(['timestamp' => $request_time]);
+
+    $state->set('daily_count.last_run', $request_time);
+  }
+}

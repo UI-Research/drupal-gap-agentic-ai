@@ -1,0 +1,14 @@
+{
+  "eval_id": 4,
+  "framework": "nestjs",
+  "pattern": "scheduled-task",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "schedule-module-imported", "passed": true, "evidence": "app.module.ts contains \"import { ScheduleModule } from '@nestjs/schedule'\""},
+    {"text": "cron-decorator-used", "passed": true, "evidence": "tasks/tasks.service.ts contains '@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)'"},
+    {"text": "service-in-module", "passed": true, "evidence": "app.module.ts contains 'TasksModule' in imports array"},
+    {"text": "schedule-forroot", "passed": true, "evidence": "app.module.ts contains 'ScheduleModule.forRoot()' in imports array"},
+    {"text": "tsc-passes", "passed": true, "evidence": "npx tsc --noEmit exited with code 0 (no type errors)"}
+  ],
+  "score": 1.0
+}

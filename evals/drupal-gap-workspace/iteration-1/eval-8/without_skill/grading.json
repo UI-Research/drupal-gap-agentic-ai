@@ -1,0 +1,14 @@
+{
+  "eval_id": 8,
+  "framework": "strapi",
+  "pattern": "auto-populate-on-save",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "lifecycle-correct-path", "passed": true, "evidence": "File article/content-types/article/lifecycles.ts exists at correct Strapi 5 path"},
+    {"text": "before-create-used", "passed": true, "evidence": "lifecycles.ts contains 'beforeCreate(event: Event)' handler"},
+    {"text": "no-after-create-throw", "passed": true, "evidence": "No 'afterCreate' found in file, no 'throw' found — clean lifecycle implementation"},
+    {"text": "slug-from-title", "passed": true, "evidence": "lifecycles.ts contains slug generation: 'data.slug = generateSlug(data.title)' in beforeCreate"},
+    {"text": "exports-lifecycle", "passed": true, "evidence": "lifecycles.ts contains 'export default {' with lifecycle hooks properly exported"}
+  ],
+  "score": 1.0
+}

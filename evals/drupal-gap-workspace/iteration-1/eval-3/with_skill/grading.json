@@ -1,0 +1,14 @@
+{
+  "eval_id": 3,
+  "framework": "drupal",
+  "pattern": "scheduled-task",
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "info-yml-exists", "passed": true, "evidence": "File daily_count.info.yml exists with name: Daily Count, type: module, core_version_requirement: ^10"},
+    {"text": "no-bare-cron-timing", "passed": true, "evidence": "hook_cron() uses State API for interval checking AND queues work to QueueWorker rather than executing directly"},
+    {"text": "queue-worker-or-state", "passed": true, "evidence": "Uses both @QueueWorker annotation (DailyCountArticleCount plugin) AND \\Drupal::state() for last-run tracking"},
+    {"text": "uses-entity-query", "passed": true, "evidence": "ArticleCounter service uses $this->entityTypeManager->getStorage('node')->getQuery() with conditions"},
+    {"text": "uses-logger", "passed": true, "evidence": "ArticleCounter uses injected logger: $this->logger->info('Daily count: @count published Article nodes.')"}
+  ],
+  "score": 1.0
+}

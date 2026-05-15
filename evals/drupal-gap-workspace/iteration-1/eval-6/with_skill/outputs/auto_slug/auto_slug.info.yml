@@ -1,0 +1,7 @@
+name: Auto Slug
+type: module
+description: 'Automatically generates a URL-friendly slug from the title when an Article node is created.'
+core_version_requirement: ^10
+package: Custom
+dependencies:
+  - drupal:node

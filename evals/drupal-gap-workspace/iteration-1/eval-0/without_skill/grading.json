@@ -1,0 +1,14 @@
+{
+  "eval_id": 0,
+  "framework": "drupal",
+  "pattern": "protected-route",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "permissions-yml-exists", "passed": true, "evidence": "File reports.permissions.yml exists and defines 'access reports' permission with title 'Access reports'"},
+    {"text": "routing-references-permission", "passed": true, "evidence": "reports.routing.yml contains '_permission: access reports' in requirements section"},
+    {"text": "no-hook-menu", "passed": true, "evidence": "grep -r 'hook_menu' found no matches in any PHP file"},
+    {"text": "info-yml-exists", "passed": true, "evidence": "File reports.info.yml exists with name: Reports, type: module"},
+    {"text": "controller-exists", "passed": true, "evidence": "File src/Controller/ReportsController.php exists with proper namespace and list() method"}
+  ],
+  "score": 1.0
+}

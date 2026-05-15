@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Module file for daily_count.
+ */
+
+use Drupal\node\Entity\Node;
+
+/**
+ * Implements hook_cron().
+ *
+ * Runs once per day and logs the number of published Article nodes.
+ */
+function daily_count_cron() {
+  $state = \Drupal::state();
+  $last_run = $state->get('daily_count.last_run', 0);
+  $request_time = \Drupal::time()->getRequestTime();
+
+  // Only run once per day (86400 seconds).
+  if (($request_time - $last_run) >= 86400) {
+    $query = \Drupal::entityQuery('node')
+      ->condition('type', 'article')
+      ->condition('status', 1)
+      ->accessCheck(FALSE)
+      ->count();
+    $count = $query->execute();
+
+    \Drupal::logger('daily_count')->info('Daily count of published Article nodes: @count', [
+      '@count' => $count,
+    ]);
+
+    $state->set('daily_count.last_run', $request_time);
+  }
+}

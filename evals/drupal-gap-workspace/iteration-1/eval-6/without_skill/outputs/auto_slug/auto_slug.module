@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the Auto Slug module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_entity_presave().
+ */
+function auto_slug_entity_presave(EntityInterface $entity): void {
+  // Only act on Article nodes.
+  if ($entity->getEntityTypeId() !== 'node' || $entity->bundle() !== 'article') {
+    return;
+  }
+
+  // Only generate slug on new entities or when the title has changed.
+  if ($entity->isNew() || $entity->original?->getTitle() !== $entity->getTitle()) {
+    if ($entity->hasField('field_slug')) {
+      /** @var \Drupal\auto_slug\SlugGenerator $slug_generator */
+      $slug_generator = \Drupal::service('auto_slug.slug_generator');
+      $slug = $slug_generator->generateSlug($entity->getTitle());
+      $entity->set('field_slug', $slug);
+    }
+  }
+}

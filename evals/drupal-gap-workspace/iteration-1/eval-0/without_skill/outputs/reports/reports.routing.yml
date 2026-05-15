@@ -1,0 +1,6 @@
+reports.list:
+  path: '/reports'
+  defaults:
+    _controller: '\Drupal\reports\Controller\ReportsController::list'
+  requirements:
+    _permission: 'access reports'

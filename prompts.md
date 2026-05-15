@@ -73,3 +73,17 @@ A running log of prompts used to build this repository.
 - **Phase 6 — Guide:** `BENCHMARK_GUIDE.md` (prerequisites, running, iterating, interpreting)
 
 ---
+
+### Prompt 7 — Publish report via GitHub Pages
+
+> Let's also publish the report using github pages.
+
+**Result:** (in progress)
+
+---
+
+> Ok, let's run our first benchmarking cycle.
+
+**Result:** (in progress)
+
+---

@@ -1,0 +1,14 @@
+{
+  "eval_id": 1,
+  "framework": "nestjs",
+  "pattern": "protected-route",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "module-exists", "passed": true, "evidence": "File reports/reports.module.ts exists with @Module decorator"},
+    {"text": "exports-service", "passed": true, "evidence": "reports.module.ts contains 'exports: [ReportsService]'"},
+    {"text": "guard-exists", "passed": true, "evidence": "File reports/auth.guard.ts exists implementing CanActivate with authorization header check"},
+    {"text": "app-module-imports", "passed": true, "evidence": "app.module.ts imports ReportsModule: \"import { ReportsModule } from './reports/reports.module'\" and includes in imports array"},
+    {"text": "tsc-passes", "passed": true, "evidence": "npx tsc --noEmit exited with code 0 (no type errors)"}
+  ],
+  "score": 1.0
+}

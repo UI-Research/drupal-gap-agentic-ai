@@ -1,0 +1,14 @@
+{
+  "eval_id": 6,
+  "framework": "drupal",
+  "pattern": "auto-populate-on-save",
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "info-yml-exists", "passed": true, "evidence": "File auto_slug.info.yml exists with name: Auto Slug, type: module, core_version_requirement: ^10"},
+    {"text": "entity-type-guard", "passed": true, "evidence": "auto_slug.module contains 'use Drupal\\node\\NodeInterface' and 'if (!$entity instanceof NodeInterface)'"},
+    {"text": "presave-not-postsave", "passed": true, "evidence": "Uses hook_entity_presave() — function auto_slug_entity_presave(EntityInterface $entity)"},
+    {"text": "slug-generation", "passed": true, "evidence": "Contains slug generation logic in Service/SlugGenerator.php and slug field assignment in module file"},
+    {"text": "event-subscriber-preferred", "passed": true, "evidence": "Uses hook_entity_presave with proper NodeInterface guard: '$entity instanceof NodeInterface' check before any operations"}
+  ],
+  "score": 1.0
+}

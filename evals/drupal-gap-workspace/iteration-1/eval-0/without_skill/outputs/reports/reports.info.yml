@@ -1,0 +1,5 @@
+name: Reports
+type: module
+description: 'Provides a JSON endpoint listing published Article nodes.'
+core_version_requirement: ^10
+package: Custom

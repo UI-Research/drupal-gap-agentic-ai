@@ -1,0 +1,14 @@
+{
+  "eval_id": 7,
+  "framework": "nestjs",
+  "pattern": "auto-populate-on-save",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "not-in-controller", "passed": false, "evidence": "items.controller.ts contains 'slug' — has @Get('slug/:slug') route and findBySlug() method. Slug generation logic is not in controller but the string 'slug' is present."},
+    {"text": "before-insert-used", "passed": true, "evidence": "item.entity.ts contains '@BeforeInsert()' decorator on generateSlug() method"},
+    {"text": "slug-generation", "passed": true, "evidence": "Multiple .ts files contain 'slug' — entity has slug column, static createSlug() method, subscriber has slug logic"},
+    {"text": "tsc-passes", "passed": true, "evidence": "npx tsc --noEmit exited with code 0 (no type errors)"},
+    {"text": "service-or-entity-layer", "passed": true, "evidence": "Slug logic in item.entity.ts (@BeforeInsert generateSlug()) and item.subscriber.ts (beforeInsert with slug assignment)"}
+  ],
+  "score": 0.8
+}

@@ -14,7 +14,8 @@ def load_evals_json(evals_path: Path) -> list[dict]:
         print(f"ERROR: {evals_path} not found", file=sys.stderr)
         sys.exit(1)
     with open(evals_path) as f:
-        return json.load(f)
+        data = json.load(f)
+        return data.get("evals", data) if isinstance(data, dict) else data
 
 
 def collect_gradings(iteration_dir: Path) -> list[dict]:

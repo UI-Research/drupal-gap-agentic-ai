@@ -1,0 +1,14 @@
+{
+  "eval_id": 5,
+  "framework": "strapi",
+  "pattern": "scheduled-task",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "cron-in-correct-location", "passed": true, "evidence": "Cron defined in config/server.ts under cron.tasks property with enabled: true"},
+    {"text": "no-strapi-config-cron", "passed": true, "evidence": "grep -r 'strapi.config.cron' found no matches in config/*.ts files"},
+    {"text": "uses-documents-api", "passed": true, "evidence": "config/server.ts uses strapi.documents('api::article.article').count({ status: 'published' })"},
+    {"text": "midnight-schedule", "passed": true, "evidence": "config/server.ts contains cron key '0 0 * * *' (midnight daily)"},
+    {"text": "logs-count", "passed": true, "evidence": "config/server.ts contains strapi.log.info(`[Cron] Published articles count: ${count}`)"}
+  ],
+  "score": 1.0
+}

@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the Auto Slug module.
+ */
+
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_install().
+ */
+function auto_slug_install() {
+  // Create field storage for 'field_auto_slug' if it doesn't exist.
+  if (!FieldStorageConfig::loadByName('node', 'field_auto_slug')) {
+    FieldStorageConfig::create([
+      'field_name' => 'field_auto_slug',
+      'entity_type' => 'node',
+      'type' => 'string',
+      'settings' => [
+        'max_length' => 255,
+      ],
+      'cardinality' => 1,
+    ])->save();
+  }
+
+  // Create field instance on the Article bundle if it doesn't exist.
+  if (!FieldConfig::loadByName('node', 'article', 'field_auto_slug')) {
+    FieldConfig::create([
+      'field_name' => 'field_auto_slug',
+      'entity_type' => 'node',
+      'bundle' => 'article',
+      'label' => 'Auto Slug',
+      'description' => 'Automatically generated URL-friendly slug from the title.',
+      'required' => FALSE,
+    ])->save();
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function auto_slug_uninstall() {
+  // Remove the field instance.
+  $field_config = FieldConfig::loadByName('node', 'article', 'field_auto_slug');
+  if ($field_config) {
+    $field_config->delete();
+  }
+
+  // Remove the field storage.
+  $field_storage = FieldStorageConfig::loadByName('node', 'field_auto_slug');
+  if ($field_storage) {
+    $field_storage->delete();
+  }
+}

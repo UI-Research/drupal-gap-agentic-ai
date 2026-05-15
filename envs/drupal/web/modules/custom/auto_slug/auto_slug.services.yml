@@ -1,0 +1,3 @@
+services:
+  auto_slug.slug_generator:
+    class: Drupal\auto_slug\Service\SlugGenerator

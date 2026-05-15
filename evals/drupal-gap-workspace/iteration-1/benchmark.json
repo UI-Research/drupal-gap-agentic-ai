@@ -1,0 +1,54 @@
+{
+  "iteration": 1,
+  "timestamp": "2026-05-15T16:06:41+00:00",
+  "patterns": {
+    "protected-route": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    },
+    "scheduled-task": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    },
+    "auto-populate-on-save": {
+      "drupal": {
+        "without_skill": 0.6,
+        "with_skill": 1.0,
+        "delta": 0.4
+      },
+      "nestjs": {
+        "without_skill": 0.8
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    }
+  },
+  "_summary": {
+    "drupal_avg_without": 0.8667,
+    "drupal_avg_with": 1.0,
+    "delta_pp": 13,
+    "nestjs_avg": 0.9333,
+    "strapi_avg": 1.0,
+    "gap_exists": true,
+    "gap_closed_by_context": true
+  }
+}

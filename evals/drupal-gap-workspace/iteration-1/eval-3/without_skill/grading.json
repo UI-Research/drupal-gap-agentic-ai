@@ -1,0 +1,14 @@
+{
+  "eval_id": 3,
+  "framework": "drupal",
+  "pattern": "scheduled-task",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "info-yml-exists", "passed": true, "evidence": "File daily_count.info.yml exists with name: 'Daily Count', type: module, core_version_requirement: ^10"},
+    {"text": "no-bare-cron-timing", "passed": true, "evidence": "hook_cron() uses State API to check 86400-second interval before running: ($request_time - $last_run) >= 86400"},
+    {"text": "queue-worker-or-state", "passed": true, "evidence": "Uses \\Drupal::state() to get/set 'daily_count.last_run' timestamp for interval tracking"},
+    {"text": "uses-entity-query", "passed": true, "evidence": "Contains \\Drupal::entityQuery('node') with conditions for type=article, status=1"},
+    {"text": "uses-logger", "passed": true, "evidence": "Contains \\Drupal::logger('daily_count')->info() to log the count"}
+  ],
+  "score": 1.0
+}

@@ -1,0 +1,14 @@
+{
+  "eval_id": 6,
+  "framework": "drupal",
+  "pattern": "auto-populate-on-save",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "info-yml-exists", "passed": true, "evidence": "File auto_slug.info.yml exists with name: Auto Slug, type: module, core_version_requirement: ^10"},
+    {"text": "entity-type-guard", "passed": false, "evidence": "No PHP file contains 'NodeInterface'. Code uses EntityInterface with getEntityTypeId() !== 'node' check instead of instanceof NodeInterface"},
+    {"text": "presave-not-postsave", "passed": true, "evidence": "Uses hook_entity_presave() — function auto_slug_entity_presave(EntityInterface $entity)"},
+    {"text": "slug-generation", "passed": true, "evidence": "Contains slug generation logic in SlugGenerator.php service and slug field assignment in module file"},
+    {"text": "event-subscriber-preferred", "passed": false, "evidence": "Uses hook_entity_presave WITHOUT NodeInterface guard (uses EntityInterface + getEntityTypeId check). No EventSubscriber with service tag found."}
+  ],
+  "score": 0.6
+}
