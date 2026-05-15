@@ -1,10 +1,13 @@
 {
   "skill_name": "drupal-gap-benchmark",
+  "_notes": "Patterns 1-3 (IDs 0-8) are in-distribution: covered by drupal-skill.md. Patterns 4-6 (IDs 9-17) are held-out: NOT covered by drupal-skill.md, testing generalization. All content_check assertions have been replaced with deterministic file/command checks. All Drupal evals include drush-en-simulate; all Strapi evals include tsc-passes.",
   "evals": [
+
     {
       "id": 0,
       "framework": "drupal",
       "pattern": "protected-route",
+      "held_out": false,
       "prompt": "In the Drupal environment (envs/drupal, running via DDEV at drupal-gap-drupal.ddev.site), create a custom module called 'reports' in web/modules/custom/reports. It should define a route at /reports that returns a list of published Article nodes as JSON. The route must require a custom 'access reports' permission. Include all necessary YAML config files and PHP classes.",
       "expected_output": "Module with reports.info.yml, reports.routing.yml, reports.permissions.yml, src/Controller/ReportsController.php",
       "env_reset": "rm -rf envs/drupal/web/modules/custom/reports",
@@ -13,13 +16,16 @@
         {"name": "routing-references-permission", "type": "file_contains", "path": "envs/drupal/web/modules/custom/reports/reports.routing.yml", "contains": "access reports", "description": "routing.yml references the 'access reports' permission"},
         {"name": "no-hook-menu", "type": "file_not_contains", "glob": "envs/drupal/web/modules/custom/reports/**/*.php", "not_contains": "hook_menu", "description": "No hook_menu() anywhere in generated PHP files"},
         {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/reports/reports.info.yml", "description": "Module info.yml file exists"},
-        {"name": "controller-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/reports/src/Controller/ReportsController.php", "description": "Controller class exists in correct namespace path"}
+        {"name": "controller-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/reports/src/Controller/ReportsController.php", "description": "Controller class exists in correct namespace path"},
+        {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en reports --simulate 2>&1", "description": "Module can be discovered and would enable cleanly (validates info.yml and dependency resolution)"}
       ]
     },
+
     {
       "id": 1,
       "framework": "nestjs",
       "pattern": "protected-route",
+      "held_out": false,
       "prompt": "In the NestJS environment (envs/nestjs), create a Reports module with a GET /reports endpoint that returns a list of items. The endpoint must require authentication using a guard. Include the module, controller, service, guard, and update app.module.ts to import the new module. Ensure all dependencies are properly exported.",
       "expected_output": "ReportsModule with controller, service, guard, and proper module imports/exports",
       "env_reset": "rm -rf envs/nestjs/src/reports",
@@ -31,10 +37,12 @@
         {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds with no errors"}
       ]
     },
+
     {
       "id": 2,
       "framework": "strapi",
       "pattern": "protected-route",
+      "held_out": false,
       "prompt": "In the Strapi 5 environment (envs/strapi), create a Report content type with title and body fields. Add a custom controller at GET /api/reports/summary that queries published reports using the Strapi 5 document service API. Ensure proper Strapi 5 patterns are used throughout.",
       "expected_output": "Report content type schema, custom controller using strapi.documents(), route file",
       "env_reset": "rm -rf envs/strapi/src/api/report",
@@ -43,28 +51,34 @@
         {"name": "no-entity-service", "type": "file_not_contains", "glob": "envs/strapi/src/api/report/**/*.ts", "not_contains": "entityService", "description": "Does not use deprecated entityService (v4 pattern)"},
         {"name": "uses-documents-api", "type": "file_contains", "glob": "envs/strapi/src/api/report/**/*.ts", "contains": "documents", "description": "Uses strapi.documents() API (v5 pattern)"},
         {"name": "uses-document-id", "type": "file_not_contains", "glob": "envs/strapi/src/api/report/**/*.ts", "not_contains": "findOne(id)", "description": "Does not use numeric id pattern (should use documentId)"},
-        {"name": "controller-exists", "type": "file_exists", "path": "envs/strapi/src/api/report/controllers/report.ts", "description": "Controller file exists"}
+        {"name": "controller-exists", "type": "file_exists", "path": "envs/strapi/src/api/report/controllers/report.ts", "description": "Controller file exists"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/strapi && npx tsc --noEmit 2>&1", "description": "TypeScript compilation succeeds with no errors"}
       ]
     },
+
     {
       "id": 3,
       "framework": "drupal",
       "pattern": "scheduled-task",
+      "held_out": false,
       "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'daily_count' in web/modules/custom/daily_count. It should add a scheduled job that runs every day at midnight and logs how many published Article nodes exist. Include all necessary files.",
       "expected_output": "Module with cron/queue worker implementation that handles daily scheduling correctly",
       "env_reset": "rm -rf envs/drupal/web/modules/custom/daily_count",
       "assertions": [
         {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/daily_count/daily_count.info.yml", "description": "Module info.yml exists"},
-        {"name": "no-bare-cron-timing", "type": "content_check", "description": "Does not rely solely on hook_cron() for midnight timing — should use QueueWorker, state API for last-run tracking, or Scheduler module"},
-        {"name": "queue-worker-or-state", "type": "content_check", "description": "Uses QueueWorker plugin annotation OR Drupal state API (\\Drupal::state()) to track last execution time"},
+        {"name": "uses-state-api", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "contains": "\\Drupal::state(", "description": "Uses Drupal State API for run-time tracking (correct pattern for time-based scheduling within hook_cron)"},
         {"name": "uses-entity-query", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "contains": "getQuery", "description": "Uses entity query to count published nodes (not raw SQL)"},
-        {"name": "uses-logger", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "contains": "logger", "description": "Logs the count using Drupal logger service"}
+        {"name": "uses-logger", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "contains": "logger", "description": "Logs the count using Drupal logger service"},
+        {"name": "no-db-query", "type": "file_not_contains", "glob": "envs/drupal/web/modules/custom/daily_count/**/*.php", "not_contains": "db_query(", "description": "Does not use deprecated db_query() — must use entity query or injected database service"},
+        {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en daily_count --simulate 2>&1", "description": "Module can be discovered and would enable cleanly"}
       ]
     },
+
     {
       "id": 4,
       "framework": "nestjs",
       "pattern": "scheduled-task",
+      "held_out": false,
       "prompt": "In the NestJS environment (envs/nestjs), add a scheduled job that runs every day at midnight and logs how many items exist. Use the @nestjs/schedule package. Include all necessary module setup and service configuration.",
       "expected_output": "ScheduleModule imported in AppModule, task service with @Cron decorator, proper provider registration",
       "env_reset": "rm -rf envs/nestjs/src/tasks",
@@ -76,65 +90,232 @@
         {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"}
       ]
     },
+
     {
       "id": 5,
       "framework": "strapi",
       "pattern": "scheduled-task",
+      "held_out": false,
       "prompt": "In the Strapi 5 environment (envs/strapi), add a cron job that runs every day at midnight and logs how many published articles exist. Use proper Strapi 5 cron configuration patterns.",
       "expected_output": "Cron task properly registered in Strapi 5 config or via strapi.cron.add()",
       "env_reset": "echo 'Reset strapi cron config'",
       "assertions": [
-        {"name": "cron-in-correct-location", "type": "content_check", "description": "Cron defined in config/cron-tasks.ts or registered via strapi.cron.add() — not in a random service file"},
+        {"name": "cron-registered", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "strapi.cron.add(", "description": "Cron registered via strapi.cron.add() (v5 pattern) — not declared inline in config"},
         {"name": "no-strapi-config-cron", "type": "file_not_contains", "glob": "envs/strapi/config/**/*.ts", "not_contains": "strapi.config.cron", "description": "Does not use strapi.config.cron (v4 pattern)"},
-        {"name": "uses-documents-api", "type": "content_check", "description": "Uses strapi.documents() or strapi.db.query() to count articles — not entityService"},
+        {"name": "uses-documents-api", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "strapi.documents(", "description": "Uses strapi.documents() to count articles (v5 document service)"},
         {"name": "midnight-schedule", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "0 0 * * *", "description": "Cron expression targets midnight"},
-        {"name": "logs-count", "type": "content_check", "description": "Logs the article count using strapi.log or console.log"}
+        {"name": "logs-count", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": ".log(", "description": "Logs the article count (strapi.log.info or console.log)"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/strapi && npx tsc --noEmit 2>&1", "description": "TypeScript compilation succeeds"}
       ]
     },
+
     {
       "id": 6,
       "framework": "drupal",
       "pattern": "auto-populate-on-save",
+      "held_out": false,
       "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'auto_slug' in web/modules/custom/auto_slug. When a new Article node is created, it should automatically generate a slug from the title and store it in a field. Use modern Drupal 10 patterns.",
-      "expected_output": "Module with EventSubscriber or hook_entity_presave implementing slug generation with entity type guard",
+      "expected_output": "Module with EventSubscriber or hook_entity_presave implementing slug generation with NodeInterface type guard",
       "env_reset": "rm -rf envs/drupal/web/modules/custom/auto_slug",
       "assertions": [
         {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/auto_slug/auto_slug.info.yml", "description": "Module info.yml exists"},
-        {"name": "entity-type-guard", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "NodeInterface", "description": "Checks entity type before operating (prevents running on all entities)"},
-        {"name": "presave-not-postsave", "type": "content_check", "description": "Uses presave/preSave hook or event (not insert/postSave which is too late to modify the entity before save)"},
+        {"name": "node-interface-guard", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "NodeInterface", "description": "Uses instanceof NodeInterface guard (not just getEntityTypeId check) — prevents running on all entity types"},
+        {"name": "uses-presave", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "presave", "description": "Uses a presave hook or event (hook_entity_presave or KernelEvents equivalent) — not insert/postSave"},
         {"name": "slug-generation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "slug", "description": "Contains slug generation logic"},
-        {"name": "event-subscriber-preferred", "type": "content_check", "description": "Uses EventSubscriber with service tag (preferred) OR hook_entity_presave with proper guard (acceptable)"}
+        {"name": "hook-or-subscriber", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "EntityEvents", "description": "Uses EntityEvents subscriber pattern (preferred) OR hook_entity_presave (acceptable — this assertion passes if either approach is used correctly; grader uses either match)"},
+        {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en auto_slug --simulate 2>&1", "description": "Module can be discovered and would enable cleanly"}
       ]
     },
+
     {
       "id": 7,
       "framework": "nestjs",
       "pattern": "auto-populate-on-save",
+      "held_out": false,
       "prompt": "In the NestJS environment (envs/nestjs), modify or extend the items setup so that when a new item is created, a 'slug' field is automatically generated from the name. Use TypeORM entity subscribers or service-layer logic (not controller-level). Include proper lifecycle hooks.",
       "expected_output": "Entity subscriber or service with @BeforeInsert slug logic, not in controller",
       "env_reset": "echo 'Reset nestjs items'",
       "assertions": [
         {"name": "not-in-controller", "type": "file_not_contains", "path": "envs/nestjs/src/items/items.controller.ts", "not_contains": "slug", "description": "Slug logic is NOT in the controller (should be in entity/service layer)"},
-        {"name": "before-insert-used", "type": "content_check", "description": "Uses @BeforeInsert() or equivalent pre-save hook — not @AfterInsert() which is too late"},
+        {"name": "before-insert-used", "type": "file_contains", "glob": "envs/nestjs/src/**/*.ts", "contains": "BeforeInsert", "description": "Uses @BeforeInsert() decorator for pre-save slug generation — not @AfterInsert() which is too late to mutate the entity"},
         {"name": "slug-generation", "type": "file_contains", "glob": "envs/nestjs/src/**/*.ts", "contains": "slug", "description": "Contains slug generation logic"},
-        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"},
-        {"name": "service-or-entity-layer", "type": "content_check", "description": "Slug logic lives in entity subscriber, entity class, or service — not controller"}
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"}
       ]
     },
+
     {
       "id": 8,
       "framework": "strapi",
       "pattern": "auto-populate-on-save",
+      "held_out": false,
       "prompt": "In the Strapi 5 environment (envs/strapi), add a lifecycle hook so that when a new Article is created, a 'slug' field is automatically generated from the title. The Article content type already has a slug field. Use proper Strapi 5 lifecycle hook patterns.",
       "expected_output": "Lifecycle hook at correct path using beforeCreate, not afterCreate for mutation",
       "env_reset": "echo 'Reset strapi lifecycle hooks'",
       "assertions": [
         {"name": "lifecycle-correct-path", "type": "file_exists", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "description": "Lifecycle file at correct Strapi 5 path (content-types/article/lifecycles.ts)"},
         {"name": "before-create-used", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "beforeCreate", "description": "Uses beforeCreate hook (not afterCreate which can't mutate)"},
-        {"name": "no-after-create-throw", "type": "content_check", "description": "Does not throw errors in afterCreate (only beforeX hooks should throw)"},
+        {"name": "no-throw-in-lifecycle", "type": "file_not_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "not_contains": "throw new Error", "description": "Does not throw errors inside lifecycle hooks (throws in afterCreate crash Strapi)"},
         {"name": "slug-from-title", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "slug", "description": "Generates slug from title"},
-        {"name": "exports-lifecycle", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "export", "description": "Lifecycle hooks are properly exported"}
+        {"name": "exports-lifecycle", "type": "file_contains", "path": "envs/strapi/src/api/article/content-types/article/lifecycles.ts", "contains": "export", "description": "Lifecycle hooks are properly exported"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/strapi && npx tsc --noEmit 2>&1", "description": "TypeScript compilation succeeds"}
+      ]
+    },
+
+    {
+      "id": 9,
+      "framework": "drupal",
+      "pattern": "config-settings-form",
+      "held_out": true,
+      "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'banner_settings' in web/modules/custom/banner_settings. It should provide an admin settings form at /admin/config/content/banner with a single text field called 'banner_message'. When submitted, save the value to Drupal config 'banner_settings.settings'. Include a config schema file so the config is properly typed.",
+      "expected_output": "Module with ConfigFormBase subclass, routing.yml pointing to admin path, config/schema/banner_settings.schema.yml",
+      "env_reset": "rm -rf envs/drupal/web/modules/custom/banner_settings",
+      "assertions": [
+        {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/banner_settings/banner_settings.info.yml", "description": "Module info.yml exists"},
+        {"name": "extends-config-form-base", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/banner_settings/**/*.php", "contains": "ConfigFormBase", "description": "Form class extends ConfigFormBase (not FormBase) — required for config storage integration"},
+        {"name": "get-form-id-method", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/banner_settings/**/*.php", "contains": "getFormId", "description": "Implements getFormId() method — required by Drupal Form API"},
+        {"name": "config-schema-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/banner_settings/config/schema/banner_settings.schema.yml", "description": "Config schema file exists — required for config to be properly typed and exportable"},
+        {"name": "uses-this-config", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/banner_settings/**/*.php", "contains": "$this->config(", "description": "Uses $this->config() for config access (correct in ConfigFormBase) not \\Drupal::config()"},
+        {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en banner_settings --simulate 2>&1", "description": "Module can be discovered and would enable cleanly"}
+      ]
+    },
+
+    {
+      "id": 10,
+      "framework": "nestjs",
+      "pattern": "config-settings-form",
+      "held_out": true,
+      "prompt": "In the NestJS environment (envs/nestjs), add a GET /settings/banner endpoint that reads a BANNER_MESSAGE environment variable (default: 'Hello') using @nestjs/config. Add a PUT /settings/banner endpoint that accepts a body with a 'message' field. Include a DTO with validation ensuring message is a non-empty string.",
+      "expected_output": "ConfigModule.forRoot in AppModule, BannerSettingsDto with class-validator, ConfigService injected in service",
+      "env_reset": "rm -rf envs/nestjs/src/settings",
+      "assertions": [
+        {"name": "config-module-imported", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "ConfigModule", "description": "ConfigModule is imported in AppModule"},
+        {"name": "config-service-injected", "type": "file_contains", "glob": "envs/nestjs/src/settings/**/*.ts", "contains": "ConfigService", "description": "ConfigService is injected to read env variables"},
+        {"name": "dto-with-validation", "type": "file_contains", "glob": "envs/nestjs/src/settings/**/*.ts", "contains": "IsString", "description": "DTO uses IsString or IsNotEmpty class-validator decorator"},
+        {"name": "banner-message-env", "type": "file_contains", "glob": "envs/nestjs/src/settings/**/*.ts", "contains": "BANNER_MESSAGE", "description": "References the BANNER_MESSAGE environment variable key"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"}
+      ]
+    },
+
+    {
+      "id": 11,
+      "framework": "strapi",
+      "pattern": "config-settings-form",
+      "held_out": true,
+      "prompt": "In the Strapi 5 environment (envs/strapi), add a GET /api/settings endpoint that returns a banner_message value. Store the default value using Strapi's plugin store in the bootstrap function. Initialize banner_message to 'Hello' if not already set.",
+      "expected_output": "Bootstrap in src/index.ts using strapi.store, custom route and controller for /api/settings",
+      "env_reset": "echo 'Reset strapi settings'",
+      "assertions": [
+        {"name": "bootstrap-in-index", "type": "file_contains", "path": "envs/strapi/src/index.ts", "contains": "bootstrap", "description": "bootstrap function defined in src/index.ts (correct Strapi 5 entry point)"},
+        {"name": "uses-strapi-store", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "strapi.store", "description": "Uses strapi.store for persistent settings (not strapi.config which is read-only at runtime)"},
+        {"name": "banner-message-key", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "banner_message", "description": "References the banner_message settings key"},
+        {"name": "settings-route-exists", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "/api/settings", "description": "Route /api/settings is defined in a controller or route file"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/strapi && npx tsc --noEmit 2>&1", "description": "TypeScript compilation succeeds"}
+      ]
+    },
+
+    {
+      "id": 12,
+      "framework": "drupal",
+      "pattern": "block-plugin",
+      "held_out": true,
+      "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'article_count_block' in web/modules/custom/article_count_block. It should provide a custom block titled 'Article Count' that displays the number of published Article nodes. The block must be available in the Block Layout UI.",
+      "expected_output": "Module with @Block annotation on a class extending BlockBase, build() returning render array, entity query for published articles",
+      "env_reset": "rm -rf envs/drupal/web/modules/custom/article_count_block",
+      "assertions": [
+        {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/article_count_block/article_count_block.info.yml", "description": "Module info.yml exists"},
+        {"name": "block-annotation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "@Block", "description": "Uses @Block annotation (required for Drupal block plugin discovery)"},
+        {"name": "extends-block-base", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "BlockBase", "description": "Block class extends BlockBase"},
+        {"name": "build-method-exists", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "public function build(", "description": "Implements required build() method returning a render array"},
+        {"name": "no-hook-block-info", "type": "file_not_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "not_contains": "hook_block_info", "description": "Does not use hook_block_info() — removed in Drupal 8, annotation-based plugins are required"},
+        {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en article_count_block --simulate 2>&1", "description": "Module can be discovered and would enable cleanly"}
+      ]
+    },
+
+    {
+      "id": 13,
+      "framework": "nestjs",
+      "pattern": "block-plugin",
+      "held_out": true,
+      "prompt": "In the NestJS environment (envs/nestjs), create a class-based middleware called RequestCounterMiddleware that increments a counter and adds an X-Request-Count header to every response. Register it globally for all routes using the configure() method in AppModule. The counter should be maintained in the middleware class as a property.",
+      "expected_output": "Class implementing NestMiddleware, configure() in AppModule applying it to all routes with forRoutes('*')",
+      "env_reset": "rm -rf envs/nestjs/src/middleware",
+      "assertions": [
+        {"name": "implements-nestmiddleware", "type": "file_contains", "glob": "envs/nestjs/src/**/*.ts", "contains": "NestMiddleware", "description": "Middleware class implements NestMiddleware interface"},
+        {"name": "configure-in-appmodule", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "configure(", "description": "configure() method defined in AppModule for global middleware registration"},
+        {"name": "applies-to-all-routes", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "forRoutes", "description": "Middleware applied using forRoutes() to cover all routes"},
+        {"name": "sets-response-header", "type": "file_contains", "glob": "envs/nestjs/src/**/*.ts", "contains": "setHeader", "description": "Sets the X-Request-Count response header"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"}
+      ]
+    },
+
+    {
+      "id": 14,
+      "framework": "strapi",
+      "pattern": "block-plugin",
+      "held_out": true,
+      "prompt": "In the Strapi 5 environment (envs/strapi), create a reusable Strapi component called 'shared.call-to-action' with three fields: title (short text), buttonText (short text), and url (string). Place it in the correct Strapi 5 components directory.",
+      "expected_output": "Component schema at src/components/shared/call-to-action.json with all three fields defined",
+      "env_reset": "rm -rf envs/strapi/src/components/shared",
+      "assertions": [
+        {"name": "component-file-exists", "type": "file_exists", "path": "envs/strapi/src/components/shared/call-to-action.json", "description": "Component schema at correct Strapi 5 path (src/components/<category>/<name>.json)"},
+        {"name": "title-field", "type": "file_contains", "path": "envs/strapi/src/components/shared/call-to-action.json", "contains": "title", "description": "title field defined in schema"},
+        {"name": "button-text-field", "type": "file_contains", "path": "envs/strapi/src/components/shared/call-to-action.json", "contains": "buttonText", "description": "buttonText field defined (camelCase — the less-obvious naming convention)"},
+        {"name": "url-field", "type": "file_contains", "path": "envs/strapi/src/components/shared/call-to-action.json", "contains": "\"url\"", "description": "url field defined in schema"},
+        {"name": "display-name-set", "type": "file_contains", "path": "envs/strapi/src/components/shared/call-to-action.json", "contains": "displayName", "description": "displayName property set (required for Strapi admin UI rendering)"}
+      ]
+    },
+
+    {
+      "id": 15,
+      "framework": "drupal",
+      "pattern": "rest-resource",
+      "held_out": true,
+      "prompt": "In the Drupal environment (envs/drupal, DDEV), create a custom module called 'site_stats' in web/modules/custom/site_stats. It should expose a REST resource at GET /api/v1/site-stats (accessible with ?_format=json) that returns the count of published nodes per content type as a JSON object. Use proper Drupal 10 REST plugin patterns.",
+      "expected_output": "Module with @RestResource annotation on class extending ResourceBase, get() method returning ResourceResponse",
+      "env_reset": "rm -rf envs/drupal/web/modules/custom/site_stats",
+      "assertions": [
+        {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/site_stats/site_stats.info.yml", "description": "Module info.yml exists"},
+        {"name": "rest-resource-annotation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "@RestResource", "description": "Uses @RestResource annotation for REST plugin discovery"},
+        {"name": "extends-resource-base", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "ResourceBase", "description": "Resource class extends ResourceBase"},
+        {"name": "get-method-implemented", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "public function get(", "description": "Implements get() method for GET HTTP verb"},
+        {"name": "returns-resource-response", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "ResourceResponse", "description": "Returns a ResourceResponse object (correct REST response type, not a plain array)"},
+        {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en site_stats --simulate 2>&1", "description": "Module can be discovered and would enable cleanly"}
+      ]
+    },
+
+    {
+      "id": 16,
+      "framework": "nestjs",
+      "pattern": "rest-resource",
+      "held_out": true,
+      "prompt": "In the NestJS environment (envs/nestjs), create a GET /api/v1/stats endpoint that returns item counts grouped by status. Include a StatsResponseDto interface/class that defines the response shape with a 'byStatus' property. Support an optional 'since' query parameter (date string) to filter items created after that date.",
+      "expected_output": "Stats controller with @Get endpoint, StatsResponseDto with byStatus, @Query decorator for 'since' param",
+      "env_reset": "rm -rf envs/nestjs/src/stats",
+      "assertions": [
+        {"name": "stats-dto-exists", "type": "file_exists", "path": "envs/nestjs/src/stats/dto/stats-response.dto.ts", "description": "StatsResponseDto file exists at expected path"},
+        {"name": "by-status-property", "type": "file_contains", "glob": "envs/nestjs/src/stats/**/*.ts", "contains": "byStatus", "description": "byStatus property defined in DTO (tests that response shape matches spec)"},
+        {"name": "query-param-decorator", "type": "file_contains", "glob": "envs/nestjs/src/stats/**/*.ts", "contains": "@Query", "description": "Uses @Query decorator for the 'since' parameter"},
+        {"name": "stats-module-registered", "type": "file_contains", "path": "envs/nestjs/src/app.module.ts", "contains": "StatsModule", "description": "StatsModule registered in AppModule"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/nestjs && npx tsc --noEmit", "description": "TypeScript compilation succeeds"}
+      ]
+    },
+
+    {
+      "id": 17,
+      "framework": "strapi",
+      "pattern": "rest-resource",
+      "held_out": true,
+      "prompt": "In the Strapi 5 environment (envs/strapi), add a custom route GET /api/v1/stats that returns the total count of published articles. Use Strapi 5's document service API. Register the route explicitly in a custom routes file for the article API.",
+      "expected_output": "Custom route registered in article routes, controller using strapi.documents(), no entityService usage",
+      "env_reset": "echo 'Reset strapi stats route'",
+      "assertions": [
+        {"name": "custom-routes-file", "type": "file_exists", "path": "envs/strapi/src/api/article/routes/custom-stats.ts", "description": "Custom routes file exists for the stats endpoint"},
+        {"name": "uses-documents-api", "type": "file_contains", "glob": "envs/strapi/src/api/article/**/*.ts", "contains": "strapi.documents(", "description": "Uses strapi.documents() API (v5 pattern)"},
+        {"name": "no-entity-service", "type": "file_not_contains", "glob": "envs/strapi/src/api/article/**/*.ts", "not_contains": "entityService", "description": "Does not use deprecated entityService (v4 pattern)"},
+        {"name": "stats-path-defined", "type": "file_contains", "glob": "envs/strapi/src/api/article/**/*.ts", "contains": "/api/v1/stats", "description": "Route path /api/v1/stats defined"},
+        {"name": "tsc-passes", "type": "command", "command": "cd envs/strapi && npx tsc --noEmit 2>&1", "description": "TypeScript compilation succeeds"}
       ]
     }
+
   ]
 }

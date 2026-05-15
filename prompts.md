@@ -102,7 +102,25 @@ Key finding: `auto-populate-on-save` pattern revealed the gap — Drupal scored 
 
 ---
 
-### Prompt 8 — Evaluate testing criteria against evidence-based standards
+### Prompt 9 — Modify benchmarking patterns based on critique
+
+> Using the critique, modify the benchmarking patterns.
+
+**Result:** Applied all high/medium severity findings from `docs/critique.md` to the eval suite:
+
+- **Deterministic assertions** — Replaced all 8 `content_check` assertions with `file_contains`, `file_not_contains`, or `command` equivalents across evals 3, 5, 6, 7, 8
+- **Execution verification** — Added `drush-en-simulate` command assertion to all 6 Drupal evals; added `tsc-passes` command assertion to all 6 Strapi evals (standardizing with NestJS which already had it)
+- **Held-out eval patterns** — Added 3 new patterns (IDs 9–17, 9 evals) marked `"held_out": true`:
+  - Pattern 4: `config-settings-form` — ConfigFormBase / @nestjs/config / strapi.store
+  - Pattern 5: `block-plugin` — @Block annotation / NestMiddleware / Strapi component schema
+  - Pattern 6: `rest-resource` — @RestResource / Stats endpoint DTO / custom Strapi route
+  - These patterns are NOT covered by `context/drupal-skill.md`, creating a generalization test
+- **Grader updated** — Removed `content_check` type entirely; added `skipped` flag for drush assertions when DDEV is unreachable; score now excludes skipped assertions from denominator
+- **aggregate.py updated** — Added `held_out` summary block with separate `drupal_avg_without/with`, `gap_exists`, `gap_closed_by_context` stats for generalization measurement
+
+Total evals: 9 → 18 (6 in-distribution, 12 held-out). Assertion types: now 100% deterministic.
+
+---
 
 > Make sure to track my prompts and commit changes as we go. Evaluate our testing criteria against known good evidence based tracking that you find online. Write a short report on critiques of our testing methods and our results.
 
