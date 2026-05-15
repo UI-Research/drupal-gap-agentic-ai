@@ -74,16 +74,30 @@ A running log of prompts used to build this repository.
 
 ---
 
+### Prompt 6 — Run first benchmark cycle
+
+> Ok, let's run our first benchmarking cycle.
+
+**Result:** Completed Iteration 1 with 12 runs (9 without_skill + 3 Drupal with_skill). Model: Claude Opus 4.6, high effort.
+
+| Metric | Score |
+|--------|-------|
+| Drupal (no context) | 0.87 avg |
+| Drupal (with context) | 1.00 avg |
+| Delta | +13pp |
+| NestJS baseline | 0.93 avg |
+| Strapi baseline | 1.00 avg |
+| Gap exists | Yes |
+| Gap closed by context | Yes |
+
+Key finding: `auto-populate-on-save` pattern revealed the gap — Drupal scored 0.60 without context (missing `NodeInterface` guard and EventSubscriber pattern) vs 1.00 with `drupal-skill.md` loaded.
+
+---
+
 ### Prompt 7 — Publish report via GitHub Pages
 
 > Let's also publish the report using github pages.
 
-**Result:** (in progress)
-
----
-
-> Ok, let's run our first benchmarking cycle.
-
-**Result:** (in progress)
+**Result:** Enabled GitHub Pages serving from `docs/` on `main`. Updated `generate_report.py` to auto-publish to `docs/index.html`. Live at https://ui-research.github.io/drupal-gap-agentic-ai/
 
 ---
