@@ -323,8 +323,14 @@ def main():
     output_path = Path(__file__).parent / "report.html"
     with open(output_path, "w") as f:
         f.write(html)
-
     print(f"Report generated: {output_path}")
+
+    # Also publish to docs/ for GitHub Pages
+    docs_path = Path(__file__).resolve().parent.parent.parent / "docs" / "index.html"
+    docs_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(docs_path, "w") as f:
+        f.write(html)
+    print(f"GitHub Pages copy: {docs_path}")
 
 
 if __name__ == "__main__":
