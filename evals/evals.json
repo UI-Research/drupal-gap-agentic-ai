@@ -100,7 +100,7 @@
       "expected_output": "Cron task properly registered in Strapi 5 config or via strapi.cron.add()",
       "env_reset": "echo 'Reset strapi cron config'",
       "assertions": [
-        {"name": "cron-registered", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "strapi.cron.add(", "description": "Cron registered via strapi.cron.add() (v5 pattern) — not declared inline in config"},
+        {"name": "cron-registered", "type": "file_contains", "glob": "envs/strapi/config/**/*.ts", "contains": "tasks:", "description": "Cron tasks defined via the 'tasks:' key in config/server.ts or config/cron-tasks.ts — the canonical Strapi 5 pattern. Both inline (server.ts) and imported (cron-tasks.ts) approaches use this key."},
         {"name": "no-strapi-config-cron", "type": "file_not_contains", "glob": "envs/strapi/config/**/*.ts", "not_contains": "strapi.config.cron", "description": "Does not use strapi.config.cron (v4 pattern)"},
         {"name": "uses-documents-api", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "strapi.documents(", "description": "Uses strapi.documents() to count articles (v5 document service)"},
         {"name": "midnight-schedule", "type": "file_contains", "glob": "envs/strapi/**/*.ts", "contains": "0 0 * * *", "description": "Cron expression targets midnight"},
@@ -122,7 +122,7 @@
         {"name": "node-interface-guard", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "NodeInterface", "description": "Uses instanceof NodeInterface guard (not just getEntityTypeId check) — prevents running on all entity types"},
         {"name": "uses-presave", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "presave", "description": "Uses a presave hook or event (hook_entity_presave or KernelEvents equivalent) — not insert/postSave"},
         {"name": "slug-generation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "slug", "description": "Contains slug generation logic"},
-        {"name": "hook-or-subscriber", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "EntityEvents", "description": "Uses EntityEvents subscriber pattern (preferred) OR hook_entity_presave (acceptable — this assertion passes if either approach is used correctly; grader uses either match)"},
+        {"name": "hook-or-subscriber", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/auto_slug/**/*.php", "contains": "EventSubscriberInterface", "description": "Uses EventSubscriberInterface (preferred modern pattern) OR hook_entity_presave (acceptable). This assertion checks for the subscriber interface; grader should also pass if hook_entity_presave is implemented correctly with NodeInterface guard. Note: 'EntityEvents' is NOT a Drupal 10 core class — subscriber pattern requires EntityHookEvents or KernelEvents."},
         {"name": "drush-en-simulate", "type": "command", "command": "cd envs/drupal && ddev drush en auto_slug --simulate 2>&1", "description": "Module can be discovered and would enable cleanly"}
       ]
     },
@@ -223,7 +223,7 @@
       "env_reset": "rm -rf envs/drupal/web/modules/custom/article_count_block",
       "assertions": [
         {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/article_count_block/article_count_block.info.yml", "description": "Module info.yml exists"},
-        {"name": "block-annotation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "@Block", "description": "Uses @Block annotation (required for Drupal block plugin discovery)"},
+        {"name": "block-annotation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "Block(", "description": "Uses Block plugin declaration — matches both legacy annotation (@Block() doc-comment) and modern PHP attribute (#[Block(...)]) syntax. Drupal 10.6 core uses PHP attributes exclusively for new plugins (26 attribute vs 2 annotation instances in non-test core modules)."},
         {"name": "extends-block-base", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "BlockBase", "description": "Block class extends BlockBase"},
         {"name": "build-method-exists", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "contains": "public function build(", "description": "Implements required build() method returning a render array"},
         {"name": "no-hook-block-info", "type": "file_not_contains", "glob": "envs/drupal/web/modules/custom/article_count_block/**/*.php", "not_contains": "hook_block_info", "description": "Does not use hook_block_info() — removed in Drupal 8, annotation-based plugins are required"},
@@ -275,7 +275,7 @@
       "env_reset": "rm -rf envs/drupal/web/modules/custom/site_stats",
       "assertions": [
         {"name": "info-yml-exists", "type": "file_exists", "path": "envs/drupal/web/modules/custom/site_stats/site_stats.info.yml", "description": "Module info.yml exists"},
-        {"name": "rest-resource-annotation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "@RestResource", "description": "Uses @RestResource annotation for REST plugin discovery"},
+        {"name": "rest-resource-annotation", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "RestResource(", "description": "Uses RestResource plugin declaration — matches both legacy annotation (@RestResource() doc-comment) and modern PHP attribute (#[RestResource(...)]) syntax. Drupal 10.6 core has 0 non-test annotation instances and 4 PHP attribute instances of @RestResource."},
         {"name": "extends-resource-base", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "ResourceBase", "description": "Resource class extends ResourceBase"},
         {"name": "get-method-implemented", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "public function get(", "description": "Implements get() method for GET HTTP verb"},
         {"name": "returns-resource-response", "type": "file_contains", "glob": "envs/drupal/web/modules/custom/site_stats/**/*.php", "contains": "ResourceResponse", "description": "Returns a ResourceResponse object (correct REST response type, not a plain array)"},

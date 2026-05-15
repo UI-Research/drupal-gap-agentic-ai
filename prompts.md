@@ -129,3 +129,36 @@ Key finding: `auto-populate-on-save` pattern revealed the gap — Drupal scored 
 Total evals: 9 → 18 (6 in-distribution, 12 held-out). Assertion types: now 100% deterministic.
 
 ---
+
+## Prompt 10
+
+> "Let's evaluate the patterns we're checking against documentation online for each. Confirm our assertions are best practices. Create an Addendum to the critiques report."
+
+**Result:**
+- Fetched Strapi 5 cron docs, Drupal REST/routing/plugin docs, NestJS middleware interface documentation
+- Inspected local Drupal 10.6.8 codebase for canonical plugin examples
+- **4 broken assertions discovered:**
+  - `EntityEvents` — phantom class; does not exist in Drupal 10 core. Fixed to `EventSubscriberInterface`
+  - `@Block` — minority syntax (2 non-test instances); PHP attribute `#[Block(` is current (26 instances). Fixed to `Block(`
+  - `@RestResource` — 0 non-test core instances; PHP attribute is current. Fixed to `RestResource(`
+  - `strapi.cron.add(` — secondary plugin-only pattern; seeded env uses canonical `tasks:` in `config/server.ts`. Fixed to `tasks:`
+- Created `docs/critique-addendum.md` with full per-assertion verification table (96/100 confirmed correct, 4 fixed)
+- All fixes applied to `evals/evals.json`
+
+---
+
+## Prompt 11
+
+> "Drupal documentation is in the codebase primarily of Drupal that we have access to on our environment."
+
+**Result:** Noted — documentation lookups for Drupal assertions now sourced from `envs/drupal/web/core` (live Drupal 10.6.8 codebase) as primary source, supplemented by drupal.org for cross-reference. Addendum evidence citations updated accordingly.
+
+---
+
+## Prompt 12
+
+> "Don't forget to log all of my prompts to prompts.md"
+
+**Result:** Logged prompts 10, 11, and 12. Committed `docs/critique-addendum.md`, updated `evals/evals.json` (4 assertion fixes), and updated `prompts.md`.
+
+---
