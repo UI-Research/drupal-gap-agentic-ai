@@ -1,0 +1,15 @@
+{
+  "eval_id": 14,
+  "framework": "strapi",
+  "pattern": "block-plugin",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: call-to-action.json", "passed": true, "evidence": "File exists at src/components/shared/call-to-action.json"},
+    {"text": "file_contains: call-to-action.json contains 'title'", "passed": true, "evidence": "JSON has title attribute"},
+    {"text": "file_contains: call-to-action.json contains 'buttonText'", "passed": true, "evidence": "JSON has buttonText attribute"},
+    {"text": "file_contains: call-to-action.json contains '\"url\"'", "passed": true, "evidence": "JSON has url attribute"},
+    {"text": "file_contains: call-to-action.json contains 'displayName'", "passed": true, "evidence": "JSON info has displayName: 'Call to Action'"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

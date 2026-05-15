@@ -1,6 +1,0 @@
-services:
-  daily_count.article_counter:
-    class: Drupal\daily_count\Service\ArticleCounter
-    arguments:
-      - '@entity_type.manager'
-      - '@logger.factory'

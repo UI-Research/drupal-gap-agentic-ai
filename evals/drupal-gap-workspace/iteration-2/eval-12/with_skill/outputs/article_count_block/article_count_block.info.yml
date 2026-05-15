@@ -1,0 +1,5 @@
+name: Article Count Block
+type: module
+description: Provides a block displaying the count of published articles.
+core_version_requirement: ^10 || ^11
+package: Custom

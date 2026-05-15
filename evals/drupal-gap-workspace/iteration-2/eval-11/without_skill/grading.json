@@ -1,0 +1,15 @@
+{
+  "eval_id": 11,
+  "framework": "strapi",
+  "pattern": "config-settings-form",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_contains: index.ts contains 'bootstrap'", "passed": true, "evidence": "src/index.ts has async bootstrap({ strapi }) function"},
+    {"text": "file_contains: any ts contains 'strapi.store'", "passed": true, "evidence": "src/index.ts and settings controller use strapi.store()"},
+    {"text": "file_contains: any ts contains 'banner_message'", "passed": true, "evidence": "Settings controller, service, and index.ts use 'banner_message' key"},
+    {"text": "file_contains: any ts contains '/api/settings'", "passed": true, "evidence": "settings routes file defines GET/PUT /api/settings endpoints"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

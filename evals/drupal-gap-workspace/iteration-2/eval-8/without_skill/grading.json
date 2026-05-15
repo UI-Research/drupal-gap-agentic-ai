@@ -1,0 +1,16 @@
+{
+  "eval_id": 8,
+  "framework": "strapi",
+  "pattern": "auto-populate-on-save",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: lifecycles.ts", "passed": true, "evidence": "File exists at src/api/article/content-types/article/lifecycles.ts"},
+    {"text": "file_contains: lifecycles.ts contains 'beforeCreate'", "passed": true, "evidence": "lifecycles.ts has beforeCreate(event) handler"},
+    {"text": "file_not_contains: lifecycles.ts NOT contains 'throw new Error'", "passed": true, "evidence": "No throw new Error in lifecycles.ts"},
+    {"text": "file_contains: lifecycles.ts contains 'slug'", "passed": true, "evidence": "lifecycles.ts generates slug from title in beforeCreate"},
+    {"text": "file_contains: lifecycles.ts contains 'export'", "passed": true, "evidence": "lifecycles.ts has export default"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

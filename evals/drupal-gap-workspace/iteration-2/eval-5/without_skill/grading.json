@@ -1,0 +1,16 @@
+{
+  "eval_id": 5,
+  "framework": "strapi",
+  "pattern": "scheduled-task",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_contains: config ts contains 'tasks:'", "passed": true, "evidence": "config/server.ts has cron.tasks: key"},
+    {"text": "file_not_contains: no strapi.config.cron in config ts", "passed": true, "evidence": "No deprecated strapi.config.cron found"},
+    {"text": "file_contains: strapi ts contains 'strapi.documents('", "passed": true, "evidence": "config/server.ts cron uses strapi.documents('api::article.article').count()"},
+    {"text": "file_contains: strapi ts contains '0 0 * * *'", "passed": true, "evidence": "config/server.ts cron key is '0 0 * * *'"},
+    {"text": "file_contains: strapi ts contains '.log('", "passed": true, "evidence": "config/server.ts cron uses console.log()"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

@@ -1,0 +1,14 @@
+{
+  "eval_id": 7,
+  "framework": "nestjs",
+  "pattern": "auto-populate-on-save",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_not_contains: items.controller.ts NOT contains 'slug'", "passed": true, "evidence": "items.controller.ts has no slug references after removing findBySlug route"},
+    {"text": "file_contains: items ts contains 'BeforeInsert'", "passed": true, "evidence": "item.entity.ts has @BeforeInsert() decorator"},
+    {"text": "file_contains: items ts contains 'slug'", "passed": true, "evidence": "item.entity.ts has slug column and generateSlug() in BeforeInsert"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

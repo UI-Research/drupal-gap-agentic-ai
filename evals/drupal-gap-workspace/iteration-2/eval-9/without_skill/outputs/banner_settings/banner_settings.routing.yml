@@ -1,0 +1,7 @@
+banner_settings.settings_form:
+  path: '/admin/config/content/banner-settings'
+  defaults:
+    _form: '\Drupal\banner_settings\Form\BannerSettingsForm'
+    _title: 'Banner Settings'
+  requirements:
+    _permission: 'administer site configuration'

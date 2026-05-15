@@ -1,0 +1,16 @@
+{
+  "eval_id": 12,
+  "framework": "drupal",
+  "pattern": "block-plugin",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: article_count_block.info.yml", "passed": true, "evidence": "File exists at envs/drupal/web/modules/custom/article_count_block/article_count_block.info.yml"},
+    {"text": "file_contains: php contains 'Block('", "passed": true, "evidence": "ArticleCountBlock.php uses PHP 8 #[Block(...)] attribute"},
+    {"text": "file_contains: php contains 'BlockBase'", "passed": true, "evidence": "ArticleCountBlock extends BlockBase"},
+    {"text": "file_contains: php contains 'public function build('", "passed": true, "evidence": "ArticleCountBlock has public function build(): array"},
+    {"text": "file_not_contains: no hook_block_info in php", "passed": true, "evidence": "No deprecated hook_block_info found"},
+    {"text": "command: drush en article_count_block --simulate", "passed": true, "evidence": "Output: The following module(s) will be installed: article_count_block"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

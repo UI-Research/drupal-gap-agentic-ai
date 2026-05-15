@@ -1,0 +1,16 @@
+{
+  "eval_id": 9,
+  "framework": "drupal",
+  "pattern": "config-settings-form",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: banner_settings.info.yml", "passed": true, "evidence": "File exists at envs/drupal/web/modules/custom/banner_settings/banner_settings.info.yml"},
+    {"text": "file_contains: php contains 'ConfigFormBase'", "passed": true, "evidence": "BannerSettingsForm.php extends ConfigFormBase"},
+    {"text": "file_contains: php contains 'getFormId'", "passed": true, "evidence": "BannerSettingsForm.php implements getFormId()"},
+    {"text": "file_exists: config/schema/banner_settings.schema.yml", "passed": true, "evidence": "File exists at banner_settings/config/schema/banner_settings.schema.yml"},
+    {"text": "file_contains: php contains '$this->config('", "passed": true, "evidence": "BannerSettingsForm.php uses $this->config('banner_settings.settings')"},
+    {"text": "command: drush en banner_settings --simulate", "passed": true, "evidence": "Output: The following module(s) will be installed: banner_settings"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

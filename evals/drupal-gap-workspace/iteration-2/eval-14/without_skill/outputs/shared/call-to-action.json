@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_call_to_actions",
+  "info": {
+    "displayName": "Call to Action",
+    "icon": "cursor",
+    "description": "A reusable call-to-action component"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "buttonText": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

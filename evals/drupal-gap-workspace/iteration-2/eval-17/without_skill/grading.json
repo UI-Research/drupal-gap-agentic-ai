@@ -1,0 +1,15 @@
+{
+  "eval_id": 17,
+  "framework": "strapi",
+  "pattern": "rest-resource",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: routes/custom-stats.ts", "passed": true, "evidence": "File exists at src/api/article/routes/custom-stats.ts"},
+    {"text": "file_contains: article ts contains 'strapi.documents('", "passed": true, "evidence": "custom-stats.ts uses strapi.documents('api::article.article').count()"},
+    {"text": "file_not_contains: no entityService in article ts", "passed": true, "evidence": "No entityService found in article directory"},
+    {"text": "file_contains: article ts contains '/api/v1/stats'", "passed": true, "evidence": "custom-stats.ts route path is '/api/v1/stats'"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

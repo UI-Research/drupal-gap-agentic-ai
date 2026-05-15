@@ -1,0 +1,5 @@
+name: Banner Settings
+type: module
+description: Provides a configuration form for banner settings.
+core_version_requirement: ^10 || ^11
+package: Custom

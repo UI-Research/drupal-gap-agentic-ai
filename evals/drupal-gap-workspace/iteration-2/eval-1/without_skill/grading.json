@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "framework": "nestjs",
+  "pattern": "protected-route",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: reports.module.ts", "passed": true, "evidence": "File exists at envs/nestjs/src/reports/reports.module.ts"},
+    {"text": "file_contains: reports.module.ts contains 'exports'", "passed": true, "evidence": "Module has exports: [ReportsService]"},
+    {"text": "file_exists: reports.guard.ts", "passed": true, "evidence": "File exists at envs/nestjs/src/reports/reports.guard.ts"},
+    {"text": "file_contains: app.module.ts contains 'ReportsModule'", "passed": true, "evidence": "app.module.ts imports and registers ReportsModule"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

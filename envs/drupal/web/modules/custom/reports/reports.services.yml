@@ -1,4 +1,0 @@
-services:
-  reports.article_reporter:
-    class: Drupal\reports\Service\ArticleReporter
-    arguments: ['@entity_type.manager']

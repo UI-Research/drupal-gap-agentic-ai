@@ -1,0 +1,15 @@
+{
+  "eval_id": 10,
+  "framework": "nestjs",
+  "pattern": "config-settings-form",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_contains: app.module.ts contains 'ConfigModule'", "passed": true, "evidence": "app.module.ts imports ConfigModule.forRoot()"},
+    {"text": "file_contains: settings ts contains 'ConfigService'", "passed": true, "evidence": "settings.service.ts injects ConfigService"},
+    {"text": "file_contains: any ts contains 'IsString'", "passed": true, "evidence": "settings.dto.ts uses @IsString() decorator"},
+    {"text": "file_contains: any ts contains 'BANNER_MESSAGE'", "passed": true, "evidence": "settings.service.ts reads BANNER_MESSAGE from config, dto has BANNER_MESSAGE field"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

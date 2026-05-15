@@ -1,0 +1,16 @@
+{
+  "eval_id": 6,
+  "framework": "drupal",
+  "pattern": "auto-populate-on-save",
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "file_exists: auto_slug.info.yml", "passed": true, "evidence": "File exists at envs/drupal/web/modules/custom/auto_slug/auto_slug.info.yml"},
+    {"text": "file_contains: php contains 'NodeInterface'", "passed": true, "evidence": "auto_slug.module and AutoSlugSubscriber.php use NodeInterface"},
+    {"text": "file_contains: php contains 'presave'", "passed": true, "evidence": "auto_slug.module implements hook_node_presave()"},
+    {"text": "file_contains: php contains 'slug'", "passed": true, "evidence": "Module contains slug field handling in presave hook"},
+    {"text": "file_contains: php contains 'EventSubscriberInterface'", "passed": true, "evidence": "AutoSlugSubscriber.php implements EventSubscriberInterface"},
+    {"text": "command: drush en auto_slug --simulate", "passed": true, "evidence": "Output: The following module(s) will be installed: auto_slug"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

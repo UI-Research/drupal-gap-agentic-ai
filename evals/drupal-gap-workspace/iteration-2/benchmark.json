@@ -1,0 +1,93 @@
+{
+  "iteration": 2,
+  "timestamp": "2026-05-15T17:22:44+00:00",
+  "patterns": {
+    "protected-route": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    },
+    "config-settings-form": {
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      },
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      }
+    },
+    "block-plugin": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    },
+    "rest-resource": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    },
+    "scheduled-task": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    },
+    "auto-populate-on-save": {
+      "drupal": {
+        "without_skill": 1.0,
+        "with_skill": 1.0,
+        "delta": 0.0
+      },
+      "nestjs": {
+        "without_skill": 1.0
+      },
+      "strapi": {
+        "without_skill": 1.0
+      }
+    }
+  },
+  "_summary": {
+    "drupal_avg_without": 1.0,
+    "drupal_avg_with": 1.0,
+    "delta_pp": 0,
+    "nestjs_avg": 1.0,
+    "strapi_avg": 1.0,
+    "gap_exists": false,
+    "gap_closed_by_context": true
+  }
+}

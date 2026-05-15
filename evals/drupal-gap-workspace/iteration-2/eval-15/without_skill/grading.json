@@ -1,0 +1,16 @@
+{
+  "eval_id": 15,
+  "framework": "drupal",
+  "pattern": "rest-resource",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: site_stats.info.yml", "passed": true, "evidence": "File exists at envs/drupal/web/modules/custom/site_stats/site_stats.info.yml"},
+    {"text": "file_contains: php contains 'RestResource('", "passed": true, "evidence": "SiteStatsResource.php uses PHP 8 #[RestResource(...)] attribute"},
+    {"text": "file_contains: php contains 'ResourceBase'", "passed": true, "evidence": "SiteStatsResource extends ResourceBase"},
+    {"text": "file_contains: php contains 'public function get('", "passed": true, "evidence": "SiteStatsResource has public function get(): ResourceResponse"},
+    {"text": "file_contains: php contains 'ResourceResponse'", "passed": true, "evidence": "Method returns new ResourceResponse($data)"},
+    {"text": "command: drush en site_stats --simulate", "passed": true, "evidence": "Output: The following module(s) will be installed: site_stats, rest"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

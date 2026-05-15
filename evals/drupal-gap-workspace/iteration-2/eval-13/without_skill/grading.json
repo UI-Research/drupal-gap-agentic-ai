@@ -1,0 +1,15 @@
+{
+  "eval_id": 13,
+  "framework": "nestjs",
+  "pattern": "block-plugin",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_contains: any src ts contains 'NestMiddleware'", "passed": true, "evidence": "ArticleCountMiddleware implements NestMiddleware"},
+    {"text": "file_contains: app.module.ts contains 'configure('", "passed": true, "evidence": "AppModule has configure(consumer: MiddlewareConsumer) method"},
+    {"text": "file_contains: app.module.ts contains 'forRoutes'", "passed": true, "evidence": "configure() uses .forRoutes('*')"},
+    {"text": "file_contains: any src ts contains 'setHeader'", "passed": true, "evidence": "Middleware calls res.setHeader() to add response headers"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

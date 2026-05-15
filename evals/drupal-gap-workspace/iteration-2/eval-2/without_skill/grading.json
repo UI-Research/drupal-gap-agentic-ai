@@ -1,0 +1,16 @@
+{
+  "eval_id": 2,
+  "framework": "strapi",
+  "pattern": "protected-route",
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "file_exists: schema.json", "passed": true, "evidence": "File exists at src/api/report/content-types/report/schema.json"},
+    {"text": "file_not_contains: no entityService in report ts", "passed": true, "evidence": "No entityService found in any report TypeScript file"},
+    {"text": "file_contains: report ts contains 'documents'", "passed": true, "evidence": "controllers/report.ts uses strapi.documents()"},
+    {"text": "file_not_contains: no findOne(id) in report ts", "passed": true, "evidence": "No findOne(id) pattern found in report files"},
+    {"text": "file_exists: controllers/report.ts", "passed": true, "evidence": "File exists at src/api/report/controllers/report.ts"},
+    {"text": "command: npx tsc --noEmit", "passed": true, "evidence": "TypeScript compilation succeeded with no errors"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

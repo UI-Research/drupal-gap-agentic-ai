@@ -1,0 +1,16 @@
+{
+  "eval_id": 3,
+  "framework": "drupal",
+  "pattern": "scheduled-task",
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "file_exists: daily_count.info.yml", "passed": true, "evidence": "File exists at envs/drupal/web/modules/custom/daily_count/daily_count.info.yml"},
+    {"text": "file_contains: php contains '\\Drupal::state('", "passed": true, "evidence": "daily_count.module uses \\Drupal::state()->set()"},
+    {"text": "file_contains: php contains 'getQuery'", "passed": true, "evidence": "daily_count.module uses ->getQuery() on entity query"},
+    {"text": "file_contains: php contains 'logger'", "passed": true, "evidence": "daily_count.module uses \\Drupal::logger() for logging"},
+    {"text": "file_not_contains: no db_query( in php", "passed": true, "evidence": "No deprecated db_query() found in any PHP file"},
+    {"text": "command: drush en daily_count --simulate", "passed": true, "evidence": "Output: The following module(s) will be installed: daily_count"}
+  ],
+  "score": 1.0,
+  "skipped_count": 0
+}

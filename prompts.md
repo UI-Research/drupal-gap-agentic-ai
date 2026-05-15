@@ -155,7 +155,25 @@ Total evals: 9 → 18 (6 in-distribution, 12 held-out). Assertion types: now 100
 
 ---
 
-## Prompt 12
+## Prompt 13
+
+> "Ok, run our new benchmarks and update the report. Include in the report a summary of the iterations and what has changed between runs. Also include a Findings Summary at the top."
+
+**Result:**
+- Verified all 3 environments up (NestJS :3000, Strapi :1337, Drupal DDEV)
+- Launched iteration-2 benchmark: 18 evals × up to 2 variants = 24 implementations
+- All 24 variants completed; all grading.json files written to `evals/drupal-gap-workspace/iteration-2/`
+- `python3 evals/aggregate.py --iteration 2` → `benchmark.json` written
+- **Iteration-2 results**: Drupal without_skill=1.00, with_skill=1.00; NestJS=1.00; Strapi=1.00; gap_exists=false
+- Key finding: The iteration-1 Drupal gap (0.87) was caused by 4 broken assertions, not model quality — most notably `EntityEvents` (phantom class) in auto-populate-on-save
+- Updated `generate_report.py` with:
+  - **Findings Summary** panel at top (colored verdict, cross-iteration trend, bullet findings)
+  - **Iteration History** table (all iterations in one view)
+  - **What Changed Between Iterations** changelog per iteration
+- Regenerated `evals/eval-viewer/report.html` and `docs/index.html`
+- Committed and pushed all changes
+
+---
 
 > "Don't forget to log all of my prompts to prompts.md"
 
