@@ -63,6 +63,13 @@ A running log of prompts used to build this repository.
 
 > Yes, reminder to log all of my prompts, commit as you go along, and keep track of progress diligently.
 
-**Result:** Starting Phase 1 — setting up all three environments in parallel.
+**Result:** Full implementation completed across all 6 phases:
+
+- **Phase 1 — Environments:** Drupal 10 DDEV (`drupal-gap-drupal.ddev.site`), NestJS Docker (`:3000/items`), Strapi 5 Docker (`:1337/api/articles`) — all smoke tests passing
+- **Phase 2 — Skill:** `context/drupal-skill.md` with routing, DI, events, cron, config export rules
+- **Phase 3 — Evals:** `evals/evals.json` — 9 test cases (3 patterns × 3 frameworks) with assertions
+- **Phase 4 — Harness:** `evals/agents/grader.md` (5 assertion types), `evals/aggregate.py` (→ benchmark.json)
+- **Phase 5 — Report:** `evals/eval-viewer/generate_report.py` (HTML with color-coded scores, gap analysis)
+- **Phase 6 — Guide:** `BENCHMARK_GUIDE.md` (prerequisites, running, iterating, interpreting)
 
 ---
