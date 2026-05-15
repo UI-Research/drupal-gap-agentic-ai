@@ -40,3 +40,13 @@ A running log of prompts used to build this repository.
 **Result:** Created `prompts.md`, initialized git repo, created `UI-Research/drupal-gap-agentic-ai` on GitHub, pushed initial commit.
 
 ---
+
+### Prompt 3 — Plan the evaluation architecture
+
+> [[PLAN]] mode session using **Claude Opus 4.6** with **high reasoning effort**.
+>
+> Designed the full evaluation architecture: reproducible benchmark environments (DDEV Drupal 10, Docker NestJS, Docker Strapi), 3 test patterns × 3 frameworks (9 evals), skill-creator–style eval harness with parallel sub-agents, deterministic grader, and visual report generation.
+
+**Result:** Created `plan.md` with detailed architecture overview, repo layout, environment setup (Phase 1), skill definition (Phase 2), 3 test patterns with gotchas and assertions (Phase 3), eval harness structure (Phase 4), visual report generator (Phase 5), and iterative benchmark guide (Phase 6). Model: Claude Opus 4.6, high effort.
+
+---
