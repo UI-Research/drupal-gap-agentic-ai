@@ -102,6 +102,14 @@ Key finding: `auto-populate-on-save` pattern revealed the gap — Drupal scored 
 
 ---
 
+### Prompt 8 — Evaluate testing criteria against evidence-based standards
+
+> Make sure to track my prompts and commit changes as we go. Evaluate our testing criteria against known good evidence based tracking that you find online. Write a short report on critiques of our testing methods and our results.
+
+**Result:** Researched established AI code evaluation benchmarks (HumanEval/Codex, EvalPlus, SWE-bench, ClassEval, τ-bench, CodeT) and produced `docs/critique.md` — a structured critique of our methodology covering: sample size, self-grading confound, static assertions, execution gap, context-leak bias, pass@k absence, and inter-rater reliability. Report committed and published to GitHub Pages.
+
+---
+
 ### Prompt 9 — Modify benchmarking patterns based on critique
 
 > Using the critique, modify the benchmarking patterns.
@@ -119,11 +127,5 @@ Key finding: `auto-populate-on-save` pattern revealed the gap — Drupal scored 
 - **aggregate.py updated** — Added `held_out` summary block with separate `drupal_avg_without/with`, `gap_exists`, `gap_closed_by_context` stats for generalization measurement
 
 Total evals: 9 → 18 (6 in-distribution, 12 held-out). Assertion types: now 100% deterministic.
-
----
-
-> Make sure to track my prompts and commit changes as we go. Evaluate our testing criteria against known good evidence based tracking that you find online. Write a short report on critiques of our testing methods and our results.
-
-**Result:** Researched established AI code evaluation benchmarks (HumanEval/Codex, EvalPlus, SWE-bench, ClassEval, τ-bench, CodeT) and produced `docs/critique.md` — a structured critique of our methodology covering: sample size, self-grading confound, static assertions, execution gap, context-leak bias, pass@k absence, and inter-rater reliability. Report committed and published to GitHub Pages.
 
 ---
